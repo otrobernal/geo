@@ -250,12 +250,11 @@ function VineyardValueSurface({
     if (!overlayCanvasRef.current) {
       const canvas = document.createElement("canvas");
       canvas.style.position = "absolute";
-      canvas.style.top = "0";
-      canvas.style.left = "0";
       canvas.style.pointerEvents = "none";
       canvas.style.zIndex = "450";
       canvas.style.opacity = String(raster.opacity);
       canvas.style.mixBlendMode = String(raster.blendMode);
+      canvas.className = "leaflet-zoom-hide";
       overlayCanvasRef.current = canvas;
       (map.getPane("overlayPane") ?? map.getContainer()).appendChild(canvas);
     }
@@ -272,6 +271,8 @@ function VineyardValueSurface({
     const applyDevicePixelRatioSizing = () => {
       const size = map.getSize();
       const dpr = window.devicePixelRatio || 1;
+      const topLeft = map.containerPointToLayerPoint([0, 0]);
+      L.DomUtil.setPosition(overlayCanvas, topLeft);
 
       overlayCanvas.style.width = `${size.x}px`;
       overlayCanvas.style.height = `${size.y}px`;
