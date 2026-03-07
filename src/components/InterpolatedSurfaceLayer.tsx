@@ -4,12 +4,11 @@ import type { MapTheme } from "../App";
 import { useMap } from "react-leaflet/hooks";
 import { extractPointSamples } from "../utilities/extractPointSamples";
 import L from "leaflet";
-import {
-  interpolateIdw,
-  type Point,
-  type PointValue,
-} from "../utilities/interpolateIdw";
-import { computePointColor } from "../utilities/computePointColor";
+import type {
+  SurfaceWorkerInput,
+  SurfaceWorkerOutput,
+} from "../utilities/surfaceWorker";
+import SurfaceWorker from "../utilities/surfaceWorker?worker";
 
 interface SurfaceConfig {
   power?: number;
@@ -38,21 +37,23 @@ export const InterpolatedSurfaceLayer = memo(function InterpolatedSurfaceLayer({
 }: Props) {
   const { fadeKm = 22, power = 6 } = surface;
   const map = useMap();
+
   const overlayRef = useRef<HTMLCanvasElement | null>(null);
   const bufferRef = useRef<HTMLCanvasElement | null>(null);
+  const workerRef = useRef<Worker | null>(null);
+  const jobIdRef = useRef(0);
   const themeRef = useRef(theme);
+  const scheduleRef = useRef<(() => void) | null>(null);
   const rafRef = useRef<number | null>(null);
-  const drawRef = useRef<(() => void) | null>(null);
 
   const points = useMemo(() => extractPointSamples(data), [data]);
 
   useEffect(() => {
     themeRef.current = theme;
-
-    if (drawRef.current) {
+    if (scheduleRef.current) {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(() => {
-        drawRef.current?.();
+        scheduleRef.current?.();
         rafRef.current = null;
       });
     }
@@ -62,7 +63,9 @@ export const InterpolatedSurfaceLayer = memo(function InterpolatedSurfaceLayer({
     if (points.length === 0) {
       overlayRef.current?.remove();
       overlayRef.current = null;
-      drawRef.current = null;
+      scheduleRef.current = null;
+      workerRef.current?.terminate();
+      workerRef.current = null;
       return;
     }
 
@@ -79,15 +82,23 @@ export const InterpolatedSurfaceLayer = memo(function InterpolatedSurfaceLayer({
       bufferRef.current = document.createElement("canvas");
     }
 
+    if (!workerRef.current) {
+      workerRef.current = new SurfaceWorker();
+    }
+
     const overlay = overlayRef.current;
     const overlayCtx = overlay.getContext("2d")!;
     const buffer = bufferRef.current;
     const bufferCtx = buffer.getContext("2d")!;
+    const worker = workerRef.current;
 
-    const draw = () => {
+    const scheduleDraw = () => {
       const size = map.getSize();
       const dpr = window.devicePixelRatio || 1;
       const origin = map.containerPointToLayerPoint([0, 0]);
+      const bounds = map.getBounds();
+      const nw = bounds.getNorthWest();
+      const se = bounds.getSouthEast();
 
       L.DomUtil.setPosition(overlay, origin);
       overlay.style.width = `${size.x}px`;
@@ -100,62 +111,87 @@ export const InterpolatedSurfaceLayer = memo(function InterpolatedSurfaceLayer({
 
       const cols = Math.ceil(size.x / rendering.sampleStepPx);
       const rows = Math.ceil(size.y / rendering.sampleStepPx);
+
+      const jobId = ++jobIdRef.current;
+
+      const input: SurfaceWorkerInput = {
+        cols,
+        rows,
+        sampleStepPx: rendering.sampleStepPx,
+        nwLat: nw.lat,
+        nwLng: nw.lng,
+        seLat: se.lat,
+        seLng: se.lng,
+        viewportX: size.x,
+        viewportY: size.y,
+        points,
+        power,
+        fadeKm,
+        theme: themeRef.current,
+        jobId,
+      };
+
+      worker.postMessage(input);
+    };
+
+    worker.onmessage = ({
+      data: result,
+    }: MessageEvent<SurfaceWorkerOutput>) => {
+      if (result.jobId !== jobIdRef.current) return;
+
+      const { buffer: buf, cols, rows } = result;
+      const imageData = new ImageData(
+        new Uint8ClampedArray(buf as ArrayBuffer),
+        cols,
+        rows,
+      );
+
+      const size = map.getSize();
+      const dpr = window.devicePixelRatio || 1;
+      const origin = map.containerPointToLayerPoint([0, 0]);
+
+      L.DomUtil.setTransform(overlay, origin, 1);
+      overlay.style.width = `${size.x}px`;
+      overlay.style.height = `${size.y}px`;
+      overlay.width = Math.floor(size.x * dpr);
+      overlay.height = Math.floor(size.y * dpr);
+      overlayCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
       buffer.width = cols;
       buffer.height = rows;
-
-      const imageData = bufferCtx.createImageData(cols, rows);
-      const px = imageData.data;
-      const currentTheme = themeRef.current;
-
-      for (let row = 0; row < rows; row++) {
-        for (let col = 0; col < cols; col++) {
-          const geo = map.containerPointToLatLng([
-            col * rendering.sampleStepPx,
-            row * rendering.sampleStepPx,
-          ] as L.PointExpression);
-
-          const result = interpolateIdw(
-            { lat: geo.lat, lng: geo.lng } as Point,
-            points as PointValue[],
-            power,
-          );
-
-          if (result.distance === Infinity) continue;
-
-          const fade = Math.exp(-result.distance / fadeKm);
-          const amp = Math.pow(
-            Math.max(0, (Math.abs(result.value) - 0.12) / 0.88),
-            1.4,
-          );
-          const visibility = fade * amp;
-          if (visibility < 0.004) continue;
-
-          const color = computePointColor(result.value, currentTheme);
-          const i = 4 * (row * cols + col);
-          px[i] = color.r;
-          px[i + 1] = color.g;
-          px[i + 2] = color.b;
-          px[i + 3] = Math.round(255 * visibility);
-        }
-      }
-
       bufferCtx.putImageData(imageData, 0, 0);
+
       overlayCtx.clearRect(0, 0, size.x, size.y);
       overlayCtx.imageSmoothingEnabled = true;
       overlayCtx.filter = `blur(${rendering.blurPx}px)`;
       overlayCtx.drawImage(buffer, 0, 0, cols, rows, 0, 0, size.x, size.y);
     };
 
-    drawRef.current = draw;
-    draw();
-    map.on("moveend zoomend resize", draw);
+    scheduleRef.current = scheduleDraw;
+    scheduleDraw();
+    map.on("moveend zoomend resize", scheduleDraw);
+
+    const onZoomAnim = (e: L.ZoomAnimEvent) => {
+      if (!overlayRef.current) return;
+      const scale = map.getZoomScale(e.zoom, map.getZoom());
+      const origin = map.latLngToLayerPoint(e.center);
+      const offset = origin
+        .multiplyBy(-scale)
+        .add(map.latLngToLayerPoint(map.getBounds().getNorthWest()));
+      L.DomUtil.setTransform(overlayRef.current, offset, scale);
+    };
+
+    map.on("zoomanim", onZoomAnim as L.LeafletEventHandlerFn);
 
     return () => {
-      map.off("moveend zoomend resize", draw);
+      map.off("moveend zoomend resize", scheduleDraw);
+      map.off("zoomanim", onZoomAnim as L.LeafletEventHandlerFn);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      workerRef.current?.terminate();
+      workerRef.current = null;
       overlayRef.current?.remove();
       overlayRef.current = null;
-      drawRef.current = null;
+      scheduleRef.current = null;
     };
   }, [map, points, rendering, power, fadeKm]);
 
