@@ -14,11 +14,12 @@ import { useConfiguration, useColorSlice } from "./hooks/hooks";
 import { GeoProvider } from "./context/GeoProvider";
 import type {
   ZipFileEntry,
-  GeoJsonCollection,
+  // GeoJsonCollection,
 } from "./hooks/useGeoJsonFromZip";
 import { hexToRgb, type ColorRgb } from "./utilities/hexToRgb";
 import { InterpolatedSurfaceLayer } from "./components/InterpolatedSurfaceLayer";
 import { SidebarPanel } from "./components/SidebarPanel";
+import { WeightsPanel } from "./components/WeightsPanel";
 
 export interface MapTheme {
   min: ColorRgb;
@@ -42,18 +43,25 @@ function GeoAppShell() {
       <MapContainer
         center={[-34.45, 117.6]}
         zoom={9.5}
+        // maxBounds={L.latLngBounds([
+				// 	[-33.5,115],
+				// 	[-34.5,118]
+				// ])}
         style={{ height: "100%" }}
       >
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png" />
+        {/* <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png" /> */}
+        <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png" />
         <GeoMapLayers />
       </MapContainer>
       <SidebarPanel />
+      <WeightsPanel />
     </div>
   );
 }
 
 function GeoMapLayers() {
-  const { displayFiles, activeGradientFile, availableFiles } =
+  // const { displayFiles, activeGradientFile, availableFiles } =
+  const { activeGradientFile, availableFiles } =
     useConfiguration();
   const colors = useColorSlice();
 
@@ -62,38 +70,43 @@ function GeoMapLayers() {
     [colors.min, colors.max],
   );
 
-  const baseLayerFiles = useMemo(
-    () =>
-      availableFiles.filter(
-        (f) => displayFiles.has(f.name) && f.name !== activeGradientFile,
-      ),
-    [availableFiles, displayFiles, activeGradientFile],
-  );
-
   const gradientFile = useMemo(
     () => availableFiles.find((f) => f.name === activeGradientFile) ?? null,
     [availableFiles, activeGradientFile],
   );
 
   const viewportFiles = useMemo(
-    () => [...baseLayerFiles, ...(gradientFile ? [gradientFile] : [])],
-    [baseLayerFiles, gradientFile],
+    // () => [...baseLayerFiles, ...(gradientFile ? [gradientFile] : [])],
+    // [baseLayerFiles, gradientFile],
+    
+    // () => (gradientFile ? [gradientFile] : []),
+    // [gradientFile],
+
+    () => (gradientFile ? [gradientFile] : availableFiles),
+    [availableFiles,gradientFile],
+
   );
 
   return (
     <>
       <MapAutoFitter files={viewportFiles} />
 
-      {baseLayerFiles.map((file) => (
+      {/* {baseLayerFiles.map((file) => (
         <LeafletGeoJSON
           key={file.name}
           data={file.data as any}
           style={{ color: colors.base, weight: 2, fillOpacity: 0.15 }}
         />
-      ))}
+      ))} */}
 
       {gradientFile && (
         <>
+        <LeafletGeoJSON
+          key={gradientFile.name}
+          data={gradientFile.data as any}
+          style={{ color: colors.marker, weight: 2, fillOpacity: 0.15 }}
+          // style={{ weight: 2, fillOpacity: 0.15 }}
+        />
           <InterpolatedSurfaceLayer
             data={gradientFile.data}
             rendering={{
@@ -104,39 +117,39 @@ function GeoMapLayers() {
             }}
             theme={theme}
           />
-          <PointMarkerLayer data={gradientFile.data} />
+          {/* <PointMarkerLayer data={gradientFile.data} /> */}
         </>
       )}
     </>
   );
 }
 
-const FIXED_DOT_STYLE = {
-  radius: 6,
-  fillColor: "#94a3b8",
-  fillOpacity: 0.85,
-  stroke: false,
-} as const;
+// const FIXED_DOT_STYLE = {
+//   radius: 6,
+//   fillColor: "#94a3b8",
+//   fillOpacity: 0.85,
+//   stroke: false,
+// } as const;
 
-export function PointMarkerLayer({ data }: { data: GeoJsonCollection | null }) {
-  if (!data) return null;
-  return (
-    <LeafletGeoJSON
-      data={data as any}
-      pointToLayer={(feature, latlng) => {
-        const marker = L.circleMarker(latlng, FIXED_DOT_STYLE);
-        const label =
-          feature.properties?.Variety || feature.properties?.name || "Point";
-        marker.bindTooltip(`<strong>${label}</strong>`, {
-          permanent: true,
-          direction: "top",
-          className: "glass-label",
-        });
-        return marker;
-      }}
-    />
-  );
-}
+// export function PointMarkerLayer({ data }: { data: GeoJsonCollection | null }) {
+//   if (!data) return null;
+//   return (
+//     <LeafletGeoJSON
+//       data={data as any}
+//       pointToLayer={(feature, latlng) => {
+//         const marker = L.circleMarker(latlng, FIXED_DOT_STYLE);
+//         const label =
+//           feature.properties?.Variety || feature.properties?.name || "Point";
+//         marker.bindTooltip(`<strong>${label}</strong>`, {
+//           permanent: true,
+//           direction: "top",
+//           className: "glass-label",
+//         });
+//         return marker;
+//       }}
+//     />
+//   );
+// }
 
 function MapAutoFitter({ files }: { files: ZipFileEntry[] }) {
   const map = useMap();

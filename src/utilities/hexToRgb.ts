@@ -14,3 +14,7 @@ export function hexToRgb(hex: string): ColorRgb {
       }
     : { r: 0, g: 0, b: 0 };
 }
+
+export function rgbToString(rgb: ColorRgb): string {
+  return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+}

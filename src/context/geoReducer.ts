@@ -26,7 +26,7 @@ export const geoReducer = produce((draft: GeoState, action: GeoAction) => {
     case "ZIP_LOAD":
       draft.zipLocation = resolveZipUrl(draft.zipName);
       draft.availableFiles = [];
-      draft.displayFiles = new Set();
+      // draft.displayFiles = new Set();
       draft.activeGradientFile = null;
       break;
 
@@ -34,13 +34,13 @@ export const geoReducer = produce((draft: GeoState, action: GeoAction) => {
       draft.availableFiles = action.payload;
       break;
 
-    case "TOGGLE_DISPLAY":
-      if (draft.displayFiles.has(action.payload)) {
-        draft.displayFiles.delete(action.payload);
-      } else {
-        draft.displayFiles.add(action.payload);
-      }
-      break;
+    // case "TOGGLE_DISPLAY":
+    //   if (draft.displayFiles.has(action.payload)) {
+    //     draft.displayFiles.delete(action.payload);
+    //   } else {
+    //     draft.displayFiles.add(action.payload);
+    //   }
+    //   break;
 
     case "SET_GRADIENT":
       draft.activeGradientFile = action.payload;

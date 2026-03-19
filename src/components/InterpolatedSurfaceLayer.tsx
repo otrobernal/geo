@@ -35,7 +35,8 @@ export const InterpolatedSurfaceLayer = memo(function InterpolatedSurfaceLayer({
   rendering,
   theme,
 }: Props) {
-  const { fadeKm = 22, power = 6 } = surface;
+  // const { fadeKm = 22, power = 6 } = surface;
+  const { fadeKm = 100, power = 2 } = surface;
   const map = useMap();
 
   const overlayRef = useRef<HTMLCanvasElement | null>(null);

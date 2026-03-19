@@ -89,24 +89,18 @@ const ColorPickers = memo(function ColorPickers() {
 });
 
 const LayerTable = memo(function LayerTable() {
-  const { availableFiles, displayFiles, activeGradientFile } =
+const { availableFiles, activeGradientFile } =
     useConfiguration();
   const dispatch = useGeoDispatch();
-
-  const handleToggleDisplay = useCallback(
-    (name: string) => dispatch({ type: "TOGGLE_DISPLAY", payload: name }),
-    [dispatch],
-  );
-
-  const handleGradientClick = useCallback(
-    (name: string, e: React.MouseEvent) => {
-      if (activeGradientFile === name) {
-        e.preventDefault();
-        dispatch({ type: "SET_GRADIENT", payload: null });
-      } else {
-        dispatch({ type: "SET_GRADIENT", payload: name });
-      }
-    },
+  const handleSelectChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = e.target.value;
+    if (selected === "") {
+      dispatch({ type: "SET_GRADIENT", payload: null });
+    } else {
+      dispatch({ type: "SET_GRADIENT", payload: selected });
+    }
+  },
     [activeGradientFile, dispatch],
   );
 
@@ -114,31 +108,20 @@ const LayerTable = memo(function LayerTable() {
 
   return (
     <div className="settings-section">
-      <label>Map Layers</label>
-      <table className="layer-table">
-        <tbody>
-          {availableFiles.map((file) => (
-            <tr key={file.name}>
-              <td>{file.displayName}</td>
-              <td align="right">
-                <input
-                  type="checkbox"
-                  checked={displayFiles.has(file.name)}
-                  onChange={() => handleToggleDisplay(file.name)}
-                />
-              </td>
-              <td align="right">
-                <input
-                  type="radio"
-                  checked={activeGradientFile === file.name}
-                  onClick={(e) => handleGradientClick(file.name, e)}
-                  onChange={() => {}}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <label htmlFor="gradient-select">Map Layers</label>
+    <select
+      id="gradient-select"
+      className="layer-select"
+      value={activeGradientFile || ""}
+      onChange={handleSelectChange}
+    >
+      <option value="">None</option>
+      {availableFiles.map((file) => (
+        <option key={file.name} value={file.name}>
+          {file.displayName.replace(/\.geojson$/, '')}
+        </option>
+      ))}
+    </select>
     </div>
   );
 });

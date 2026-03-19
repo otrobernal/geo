@@ -6,7 +6,9 @@ import JSZip from "jszip";
 export type GeoJsonCollection = GeoJSON.FeatureCollection<
   GeoJSON.Geometry,
   any
->;
+> & {
+  weights: Array<{ metabolite: string; p1: number }>;
+};
 
 export interface ZipFileEntry {
   name: string;

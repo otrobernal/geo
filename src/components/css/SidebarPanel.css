@@ -124,3 +124,20 @@
 }
 
 .layer-table td { padding: 6px 0; border-top: 1px solid #f1f5f9; }
+
+.plot-panel {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  z-index: 1000;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e2e8f0;
+  height: 80vh;
+  width: 40vh;
+  /* transform: "rotate(90deg)"; */
+}

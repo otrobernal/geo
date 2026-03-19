@@ -24,10 +24,10 @@ export function useZip() {
 }
 
 export function useConfiguration() {
-  const { displayFiles, activeGradientFile, availableFiles } = useGeoState();
+  const { activeGradientFile, availableFiles } = useGeoState();
   return useMemo(
-    () => ({ displayFiles, activeGradientFile, availableFiles }),
-    [displayFiles, activeGradientFile, availableFiles],
+    () => ({ activeGradientFile, availableFiles }),
+    [activeGradientFile, availableFiles],
   );
 }
 
@@ -38,4 +38,8 @@ export function useColorSlice() {
 
 export function useMenuSlice(): boolean {
   return useGeoState().isMenuExpanded;
+}
+
+export function useBarplotSlice(): boolean {
+  return useGeoState().isBarPlotExpanded
 }
