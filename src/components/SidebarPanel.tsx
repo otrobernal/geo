@@ -1,7 +1,6 @@
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 import "./css/SidebarPanel.css";
 import {
-  useZip,
   useColorSlice,
   useConfiguration,
   useMenuSlice,
@@ -10,19 +9,13 @@ import {
 import type { ColorTheme } from "../context/state";
 
 const DatasetSection = memo(function DatasetSection() {
-  const { zipName } = useZip();
   const dispatch = useGeoDispatch();
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      dispatch({ type: "ZIP_INPUT_CHANGE", payload: e.target.value }),
-    [dispatch],
-  );
-
-  const handleLoad = useCallback(
-    (e: React.SyntheticEvent) => {
-      e.preventDefault();
-      dispatch({ type: "ZIP_LOAD" });
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      dispatch({ type: "ZIP_FILE_SELECTED", payload: file });
     },
     [dispatch],
   );
@@ -30,16 +23,12 @@ const DatasetSection = memo(function DatasetSection() {
   return (
     <div className="settings-section">
       <label>Dataset</label>
-      <div className="input-row">
-        <input
-          className="text-input"
-          value={zipName}
-          onChange={handleInputChange}
-        />
-        <button className="primary-button" onClick={handleLoad}>
-          Load
-        </button>
-      </div>
+      <input
+        type="file"
+        accept=".zip"
+        className="file-input"
+        onChange={handleFileChange}
+      />
     </div>
   );
 });
@@ -89,18 +78,17 @@ const ColorPickers = memo(function ColorPickers() {
 });
 
 const LayerTable = memo(function LayerTable() {
-const { availableFiles, activeGradientFile } =
-    useConfiguration();
+  const { availableFiles, activeGradientFile } = useConfiguration();
   const dispatch = useGeoDispatch();
   const handleSelectChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = e.target.value;
-    if (selected === "") {
-      dispatch({ type: "SET_GRADIENT", payload: null });
-    } else {
-      dispatch({ type: "SET_GRADIENT", payload: selected });
-    }
-  },
+      const selected = e.target.value;
+      if (selected === "") {
+        dispatch({ type: "SET_GRADIENT", payload: null });
+      } else {
+        dispatch({ type: "SET_GRADIENT", payload: selected });
+      }
+    },
     [activeGradientFile, dispatch],
   );
 
@@ -109,19 +97,19 @@ const { availableFiles, activeGradientFile } =
   return (
     <div className="settings-section">
       <label htmlFor="gradient-select">Map Layers</label>
-    <select
-      id="gradient-select"
-      className="layer-select"
-      value={activeGradientFile || ""}
-      onChange={handleSelectChange}
-    >
-      <option value="">None</option>
-      {availableFiles.map((file) => (
-        <option key={file.name} value={file.name}>
-          {file.displayName.replace(/\.geojson$/, '')}
-        </option>
-      ))}
-    </select>
+      <select
+        id="gradient-select"
+        className="layer-select"
+        value={activeGradientFile || ""}
+        onChange={handleSelectChange}
+      >
+        <option value="">None</option>
+        {availableFiles.map((file) => (
+          <option key={file.name} value={file.name}>
+            {file.displayName.replace(/\.geojson$/, "")}
+          </option>
+        ))}
+      </select>
     </div>
   );
 });

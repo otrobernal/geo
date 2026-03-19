@@ -44,9 +44,9 @@ function GeoAppShell() {
         center={[-34.45, 117.6]}
         zoom={9.5}
         // maxBounds={L.latLngBounds([
-				// 	[-33.5,115],
-				// 	[-34.5,118]
-				// ])}
+        // 	[-33.5,115],
+        // 	[-34.5,118]
+        // ])}
         style={{ height: "100%" }}
       >
         {/* <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png" /> */}
@@ -61,8 +61,7 @@ function GeoAppShell() {
 
 function GeoMapLayers() {
   // const { displayFiles, activeGradientFile, availableFiles } =
-  const { activeGradientFile, availableFiles } =
-    useConfiguration();
+  const { activeGradientFile, availableFiles } = useConfiguration();
   const colors = useColorSlice();
 
   const theme = useMemo(
@@ -78,13 +77,12 @@ function GeoMapLayers() {
   const viewportFiles = useMemo(
     // () => [...baseLayerFiles, ...(gradientFile ? [gradientFile] : [])],
     // [baseLayerFiles, gradientFile],
-    
+
     // () => (gradientFile ? [gradientFile] : []),
     // [gradientFile],
 
     () => (gradientFile ? [gradientFile] : availableFiles),
-    [availableFiles,gradientFile],
-
+    [availableFiles, gradientFile],
   );
 
   return (
@@ -101,12 +99,19 @@ function GeoMapLayers() {
 
       {gradientFile && (
         <>
-        <LeafletGeoJSON
-          key={gradientFile.name}
-          data={gradientFile.data as any}
-          style={{ color: colors.marker, weight: 2, fillOpacity: 0.15 }}
-          // style={{ weight: 2, fillOpacity: 0.15 }}
-        />
+          <LeafletGeoJSON
+            key={gradientFile.name}
+            data={gradientFile.data as any}
+            style={{ color: colors.marker, weight: 2, fillOpacity: 0.15 }}
+            pointToLayer={function (_, latlng) {
+              return L.circleMarker(latlng, {
+                radius: 5,
+                fillColor: "#000000",
+                color: "#000000",
+                fill: true,
+              });
+            }}
+          />
           <InterpolatedSurfaceLayer
             data={gradientFile.data}
             rendering={{

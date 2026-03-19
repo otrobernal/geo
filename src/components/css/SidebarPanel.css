@@ -141,3 +141,9 @@
   width: 40vh;
   /* transform: "rotate(90deg)"; */
 }
+
+.file-input {
+  width: 100%;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
