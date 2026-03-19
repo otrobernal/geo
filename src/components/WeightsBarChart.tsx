@@ -20,7 +20,7 @@ return (
 //   <ResponsiveContainer width="100%" height={300}>
     <BarChart 
     // style={{ width: '100%', maxWidth: '700px', maxHeight: '100vh', aspectRatio: 0.25 }}
-    style={{ width: '40vh', height: '80vh' }}
+    style={{ width: '40vh', height: '70vh' }}
     responsive
     data={coloredData}
     layout="vertical"

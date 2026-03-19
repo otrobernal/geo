@@ -1,18 +1,18 @@
-// import { memo, useMemo, useCallback } from "react";
-import { memo, useMemo } from "react";
+import { memo, useMemo, useCallback } from "react";
+// import { memo, useMemo } from "react";
 import "./css/SidebarPanel.css";
-import { useConfiguration, useColorSlice } from "../hooks/hooks";
+import { useConfiguration, useColorSlice, useBarplotSlice, useGeoDispatch } from "../hooks/hooks";
 import { hexToRgb } from "../utilities/hexToRgb";
 import { WeightsBarChart } from "./WeightsBarChart";
 
 export const WeightsPanel = memo(function WeightsPanel() {
-    // const isExpanded = useBarplotSlice();
-    // const dispatch = useGeoDispatch();
+    const isExpanded = useBarplotSlice();
+    const dispatch = useGeoDispatch();
 
-//   const handleMenuToggle = useCallback(
-//     () => dispatch({ type: "MENU_TOGGLE" }),
-//     [dispatch],
-//   );
+  const handlePlotToggle = useCallback(
+    () => dispatch({ type: "PLOT_TOGGLE" }),
+    [dispatch],
+  );
 
   const { activeGradientFile, availableFiles } = useConfiguration();
   
@@ -32,13 +32,13 @@ export const WeightsPanel = memo(function WeightsPanel() {
   return (
     <div
       id="weights-panel"
-    //   className={`plot-panel ${isExpanded ? "panel-expanded" : "panel-collapsed"}`}
-      className={"plot-panel"}
+      className={`plot-panel ${isExpanded ? "plot-expanded" : "plot-collapsed"}`}
+      // className={"plot-panel"}
     >
-      {/* <header className="panel-header">
-        <h4>Metabolites</h4>
+      <header className="panel-header">
+        {/* <h4>Metabolites</h4> */}
          {isExpanded && <h4>Metabolites</h4>}
-        <button onClick={handleMenuToggle} className="icon-button">
+        <button onClick={handlePlotToggle} className="icon-button">
           <svg
             width="20"
             height="20"
@@ -53,10 +53,9 @@ export const WeightsPanel = memo(function WeightsPanel() {
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </button> 
-      </header> */}
-
-      {/* {isExpanded && weightsFile && ( */}
-      {weightsFile && (
+      </header>
+      {/* {weightsFile && ( */}
+      {isExpanded && weightsFile && (
         <div className="panel-content">
           <WeightsBarChart data={weightsFile.data.weights} theme={theme} />
         </div>
