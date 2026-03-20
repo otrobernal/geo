@@ -20,7 +20,7 @@ return (
 //   <ResponsiveContainer width="100%" height={300}>
     <BarChart 
     // style={{ width: '100%', maxWidth: '700px', maxHeight: '100vh', aspectRatio: 0.25 }}
-    style={{ width: '40vh', height: '70vh' }}
+    style={{ width: '40vh', height: '75vh' }}
     responsive
     data={coloredData}
     layout="vertical"
@@ -51,7 +51,7 @@ return (
       />
       {/* <Tooltip /> */}
       {/* <Bar dataKey="p1" fill="#22c55e" />  // Use your theme color */}
-      <Bar dataKey="p1" fill="inherit" />  // Use your theme color
+      <Bar dataKey="p1" fill="inherit" />
     </BarChart>
 //   </ResponsiveContainer>
       );

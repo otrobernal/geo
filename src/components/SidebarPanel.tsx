@@ -103,10 +103,10 @@ const LayerTable = memo(function LayerTable() {
         value={activeGradientFile || ""}
         onChange={handleSelectChange}
       >
-        <option value="">None</option>
+        <option value=""></option>
         {availableFiles.map((file) => (
           <option key={file.name} value={file.name}>
-            {file.displayName.replace(/\.geojson$/, "")}
+            {file.displayName.replace(/\.geojson$/, "") + (file.data.weights.length > 0 ? "**" : "")}
           </option>
         ))}
       </select>

@@ -139,10 +139,21 @@
   border: 1px solid #e2e8f0;
   height: 80vh;
   width: 40vh;
-  /* transform: "rotate(90deg)"; */
 }
 
-.plot-expanded { width: 40vh; height: 80hv; padding: 8px; }
+.explanation {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #64748b;
+  
+}
+
+.plot-expanded { 
+  width: 40vh; 
+  height: 85vh; 
+  padding: 8px; 
+  overflow-y:scroll ;
+}
 .plot-collapsed { width: 44px; height: 44px; padding: 8px; }
 
 .file-input {
