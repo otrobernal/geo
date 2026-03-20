@@ -96,7 +96,7 @@ const LayerTable = memo(function LayerTable() {
 
   return (
     <div className="settings-section">
-      <label htmlFor="gradient-select">Map Layers</label>
+      <label htmlFor="gradient-select">Variety & Sensory attribute</label>
       <select
         id="gradient-select"
         className="layer-select"
@@ -129,7 +129,7 @@ export const SidebarPanel = memo(function SidebarPanel() {
       className={`map-settings-panel ${isExpanded ? "panel-expanded" : "panel-collapsed"}`}
     >
       <header className="panel-header">
-        {isExpanded && <h4>Map Settings</h4>}
+        {isExpanded && <h4>Settings</h4>}
         <button onClick={handleMenuToggle} className="icon-button">
           <svg
             width="20"

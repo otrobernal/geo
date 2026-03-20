@@ -102,14 +102,35 @@ function GeoMapLayers() {
           <LeafletGeoJSON
             key={gradientFile.name}
             data={gradientFile.data as any}
-            style={{ color: colors.marker, weight: 2, fillOpacity: 0.15 }}
-            pointToLayer={function (_, latlng) {
-              return L.circleMarker(latlng, {
+            style={{ color: colors.marker, weight: 2, fillOpacity: 0.5 }}
+            // pointToLayer={function (_, latlng) {
+            //   return L.circleMarker(latlng, {
+            //     radius: 5,
+            //     fill: true,
+            //   });
+            // }}
+            pointToLayer={function (feature, latlng) {
+              const marker = L.circleMarker(latlng, {
                 radius: 5,
-                fillColor: "#000000",
-                color: "#000000",
                 fill: true,
               });
+              
+              // Extract feature data
+              const brand = feature.properties?.Brand || "Unknown";
+              const coordinates = feature.geometry?.coordinates || [0, 0];
+              console.log(brand)
+              // Create popup content
+              const popupContent = `
+              <div style="padding: 8px;">
+              <strong>Brand:</strong> ${brand}<br />
+              <strong>Coordinates:</strong> [${coordinates[1]}, ${coordinates[0]}]
+              </div>
+              `;
+              
+              // Bind popup to marker
+              marker.bindPopup(popupContent);
+  
+              return marker;
             }}
           />
           <InterpolatedSurfaceLayer
