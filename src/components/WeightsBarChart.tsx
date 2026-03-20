@@ -42,10 +42,10 @@ return (
       dataKey="metabolite" 
       type = "category" 
       textAnchor="end" 
-      width={160}
+      width={200}
       axisLine={false}
       tickLine={false}
-      fontSize="0.75rem"
+      fontSize="rem"
     //   niceTicks="none"
       interval={0}
       />

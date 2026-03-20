@@ -27,8 +27,6 @@ export const WeightsPanel = memo(function WeightsPanel() {
     [availableFiles, activeGradientFile],
   );
 
-//   weightsFile && console.log("Weights file found:", weightsFile.data);
-
   return (
     <div
       id="weights-panel"
@@ -37,7 +35,7 @@ export const WeightsPanel = memo(function WeightsPanel() {
     >
       <header className="panel-header">
         {/* <h4>Metabolites</h4> */}
-         {isExpanded && <h4>Metabolites</h4>}
+         {isExpanded && <h4>Related chemical atrributes</h4>}
         <button onClick={handlePlotToggle} className="icon-button">
           <svg
             width="20"
@@ -54,11 +52,34 @@ export const WeightsPanel = memo(function WeightsPanel() {
           </svg>
         </button> 
       </header>
-      {/* {weightsFile && ( */}
-      {isExpanded && weightsFile && (
+      {isExpanded && (weightsFile && (
+        weightsFile.data.weights.length > 0 && (
         <div className="panel-content">
           <WeightsBarChart data={weightsFile.data.weights} theme={theme} />
         </div>
+        ) || (
+        <div className="panel-content">
+          <p>
+            {`No significant links were found between the chemical composition of ${weightsFile.displayName.replace(/_.*/, "")} and ${weightsFile.displayName.replace(/.*_(.*).geojson/, "\$1")} ${weightsFile.displayName.replace(/.*_(.*)_.*.geojson/, "\$1")}.`}
+          </p>
+        </div>
+        )
+      ) || (
+        <div className="panel-content">
+          <p>
+            Select a variety and sensory attribute on the Settings panel. 
+          </p>
+          <p>
+            A heatmap will appear, showing how this attribute varies across the wine producing region.
+          </p>
+          <p>
+            This is based on samples obtained from participating vineyards, shown as grey circles.
+          </p>
+          <p>
+            In turn, this pannel will display the identified chemical features that drive increase/decrease in the attribute's intensity.
+          </p>
+        </div>
+        )
       )}
     </div>
   );
