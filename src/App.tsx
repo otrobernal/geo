@@ -44,10 +44,7 @@ function GeoAppShell() {
       <MapContainer
         center={[-34.45, 117.6]}
         zoom={9.5}
-        // maxBounds={L.latLngBounds([
-        // 	[-33.5,115],
-        // 	[-34.5,118]
-        // ])}
+        maxZoom={12}
         style={{ height: "100%" }}
       >
         {/* <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png" /> */}
