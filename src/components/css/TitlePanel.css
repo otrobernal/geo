@@ -1,0 +1,14 @@
+#letitle {
+  position: absolute;
+  top: 5%;
+  left: 73%;
+  /* transform: translateX(-50%); */
+  /* background: rgba(255, 255, 255, 0); */
+  padding: 0px 0px;
+  border-radius: 0px;
+  font-size: 3em;
+  font-weight: 600;
+  font-family: sans-serif;
+  color: #000000d3;
+  z-index: 1000;
+}

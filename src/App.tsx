@@ -20,6 +20,7 @@ import { hexToRgb, type ColorRgb } from "./utilities/hexToRgb";
 import { InterpolatedSurfaceLayer } from "./components/InterpolatedSurfaceLayer";
 import { SidebarPanel } from "./components/SidebarPanel";
 import { WeightsPanel } from "./components/WeightsPanel";
+import { TitlePanel } from "./components/TitlePanel";
 
 export interface MapTheme {
   min: ColorRgb;
@@ -53,6 +54,7 @@ function GeoAppShell() {
         <TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png" />
         <GeoMapLayers />
       </MapContainer>
+      <TitlePanel/>
       <SidebarPanel />
       <WeightsPanel />
     </div>

@@ -55,20 +55,19 @@ export const WeightsPanel = memo(function WeightsPanel() {
       {isExpanded && (weightsFile && (
         weightsFile.data.weights.length > 0 && (
         <div className="panel-content">
-          <WeightsBarChart data={weightsFile.data.weights} theme={theme} />
           <div className="explanation">
             <>
-              <span style={{ color: rgbToString(theme.max) }}>Rightwards bars </span>
-              indicate components that increased <strong>{`${weightsFile.displayName.replace(/.*_(.*).geojson/, "\$1")} ${weightsFile.displayName.replace(/.*_(.*)_.*.geojson/, "\$1")}`}</strong> in <strong>{`${weightsFile.displayName.replace(/_.*/, "")}. `}</strong>
-              <span style={{ color: rgbToString(theme.min) }}>Leftwards bars </span>
-              {` indicate components that decreased it. The size of the bar indicates the magnitude of the effect.`}
+              Bars indicate components that <span style={{ color: rgbToString(theme.max) }}>increased </span> or <span style={{ color: rgbToString(theme.min) }}>decreased </span>
+              <strong>{`${weightsFile.displayName.replace(/.*_(.*).geojson/, "\$1")} ${weightsFile.displayName.replace(/.*_(.*)_.*.geojson/, "\$1")}`}</strong> in <strong>{`${weightsFile.displayName.replace(/_.*/, "")}. `}</strong>
+              The size of the bar indicates the magnitude of the effect.
             </>
           </div>
+          <WeightsBarChart data={weightsFile.data.weights} theme={theme} />
         </div>
         ) || (
         <div className="panel-content">
           <div className="explanation">
-            {`No significant links were found between the chemical composition of ${weightsFile.displayName.replace(/_.*/, "")} and ${weightsFile.displayName.replace(/.*_(.*).geojson/, "\$1")} ${weightsFile.displayName.replace(/.*_(.*)_.*.geojson/, "\$1")}.`}
+            No significant links were found between the chemical composition of <strong>{`${weightsFile.displayName.replace(/_.*/, "")}`}</strong> and <strong>{`${weightsFile.displayName.replace(/.*_(.*).geojson/, "\$1")} ${weightsFile.displayName.replace(/.*_(.*)_.*.geojson/, "\$1")}`}</strong>.
           </div>
         </div>
         )
