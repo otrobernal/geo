@@ -117,7 +117,6 @@ function GeoMapLayers() {
               // Extract feature data
               const brand = feature.properties?.Brand || "Unknown";
               const coordinates = feature.geometry?.coordinates || [0, 0];
-              console.log(brand)
               // Create popup content
               const popupContent = `
               <div style="padding: 8px;">

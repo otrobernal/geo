@@ -5,7 +5,8 @@ import { produce, enableMapSet } from "immer";
 enableMapSet();
 
 export type GeoAction =
-  | { type: "ZIP_FILE_SELECTED"; payload: File }
+  // | { type: "ZIP_FILE_SELECTED"; payload: File }
+  | { type: "ZIP_FILE_SELECTED"; payload: string }
   | { type: "ZIP_INPUT_CHANGE"; payload: string }
   | { type: "ZIP_LOAD" }
   | { type: "SET_AVAILABLE_FILES"; payload: ZipFileEntry[] }
@@ -37,7 +38,9 @@ export const geoReducer = produce((draft: GeoState, action: GeoAction) => {
       break;
 
     case "ZIP_FILE_SELECTED":
-      draft.zipLocation = URL.createObjectURL(action.payload);
+      draft.zipName = action.payload;
+      // draft.zipLocation = URL.createObjectURL(action.payload);
+      draft.zipLocation = resolveZipUrl(action.payload);
       draft.availableFiles = [];
       draft.activeGradientFile = null;
       break;

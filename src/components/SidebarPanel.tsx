@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import "./css/SidebarPanel.css";
 import {
   useColorSlice,
@@ -12,10 +12,12 @@ const DatasetSection = memo(function DatasetSection() {
   const dispatch = useGeoDispatch();
 
   const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      dispatch({ type: "ZIP_FILE_SELECTED", payload: file });
+    // (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      // const file = e.target.files?.[0];
+      const filename = e.target.value;
+      if (!filename) return;
+      dispatch({ type: "ZIP_FILE_SELECTED", payload: filename });
     },
     [dispatch],
   );
@@ -23,12 +25,21 @@ const DatasetSection = memo(function DatasetSection() {
   return (
     <div className="settings-section">
       <label>Dataset</label>
-      <input
+      {/* <input
         type="file"
         accept=".zip"
         className="file-input"
         onChange={handleFileChange}
-      />
+      /> */}
+      <select
+      className="file-input"
+      defaultValue="WAwine_allSensoryWithMetabolites_minmaxNorm.zip"
+      onChange={handleFileChange}
+    >
+      {/* <option value="">Select data...</option> */}
+      <option value="WAwine_allSensoryWithMetabolites_minmaxNorm.zip">Sensory attributes</option>
+      <option value="allChemistryWithEmptyWeightsElement.zip">Chemical composition</option>
+    </select>
     </div>
   );
 });

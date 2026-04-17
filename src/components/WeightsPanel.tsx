@@ -1,13 +1,18 @@
 import { memo, useMemo, useCallback } from "react";
 // import { memo, useMemo } from "react";
 import "./css/SidebarPanel.css";
-import { useConfiguration, useColorSlice, useBarplotSlice, useGeoDispatch } from "../hooks/hooks";
+import { useConfiguration, useColorSlice, useBarplotSlice, useGeoDispatch, useZip } from "../hooks/hooks";
 import { hexToRgb, rgbToString } from "../utilities/hexToRgb";
 import { WeightsBarChart } from "./WeightsBarChart";
 
 export const WeightsPanel = memo(function WeightsPanel() {
+  const { zipName } = useZip();
     const isExpanded = useBarplotSlice();
     const dispatch = useGeoDispatch();
+
+    if (zipName != "WAwine_allSensoryWithMetabolites_minmaxNorm.zip") {
+      return null;
+    }
 
   const handlePlotToggle = useCallback(
     () => dispatch({ type: "PLOT_TOGGLE" }),
