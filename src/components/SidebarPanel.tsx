@@ -33,12 +33,15 @@ const DatasetSection = memo(function DatasetSection() {
       /> */}
       <select
       className="file-input"
-      defaultValue="WAwine_allSensoryWithMetabolites_minmaxNorm.zip"
+      defaultValue="allSensoryWithCompositionLoadings.zip"
       onChange={handleFileChange}
     >
       {/* <option value="">Select data...</option> */}
-      <option value="WAwine_allSensoryWithMetabolites_minmaxNorm.zip">Sensory attributes</option>
-      <option value="allChemistryWithEmptyWeightsElement.zip">Chemical composition</option>
+      <option value="allSensoryWithCompositionLoadings.zip">Sensory attributes</option>
+      <option value="allChemistryWithEmptyChemicalElement.zip">Chemical composition</option>
+      <option value="chemosensoryWithWeights.zip">Main chemo-sensory pattern</option>
+      <option value="chemoclimateWithWeights.zip">Climate and composition</option>
+      
     </select>
     </div>
   );
@@ -107,7 +110,7 @@ const LayerTable = memo(function LayerTable() {
 
   return (
     <div className="settings-section">
-      <label htmlFor="gradient-select">Variety & Sensory attribute</label>
+      <label htmlFor="gradient-select">Variety & attribute</label>
       <select
         id="gradient-select"
         className="layer-select"
@@ -117,7 +120,7 @@ const LayerTable = memo(function LayerTable() {
         <option value=""></option>
         {availableFiles.map((file) => (
           <option key={file.name} value={file.name}>
-            {file.displayName.replace(/\.geojson$/, "") + (file.data.weights.length > 0 ? "**" : "")}
+            {file.displayName.replace(/\.geojson$/, "") + (file.data.chemical.length > 0 ? "**" : "")}
           </option>
         ))}
       </select>

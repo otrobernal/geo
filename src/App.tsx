@@ -19,7 +19,10 @@ import type {
 import { hexToRgb, type ColorRgb } from "./utilities/hexToRgb";
 import { InterpolatedSurfaceLayer } from "./components/InterpolatedSurfaceLayer";
 import { SidebarPanel } from "./components/SidebarPanel";
-import { WeightsPanel } from "./components/WeightsPanel";
+import { ChemicalsPanel } from "./components/ChemicalsPanel";
+import { AromaPanel } from "./components/AromaPanel";
+import { PalatePanel } from "./components/PalatePanel";
+import { ClimatePanel } from "./components/ClimatePanel";
 import { TitlePanel } from "./components/TitlePanel";
 
 export interface MapTheme {
@@ -53,7 +56,10 @@ function GeoAppShell() {
       </MapContainer>
       <TitlePanel/>
       <SidebarPanel />
-      <WeightsPanel />
+      <ChemicalsPanel />
+      <AromaPanel />
+      <PalatePanel />
+      <ClimatePanel />
     </div>
   );
 }

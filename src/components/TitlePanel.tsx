@@ -11,10 +11,10 @@ export const TitlePanel = memo(function TitlePanel() {
       {activeGradientFile && (
         <>
           <span style={{ display: "block" }}>
-            {activeGradientFile.replace(/.*_(.*)\.geojson/, "$1")} {activeGradientFile.replace(/.*_(.*)_.*\.geojson/, "$1")}
+            {activeGradientFile.replace(/(Cabernet|Chardonnay|Riesling|Shiraz)(.*)\.geojson/,"$2").replace(/.*_(.*)/, "$1")} {activeGradientFile.replace(/(Cabernet|Chardonnay|Riesling|Shiraz)(.*)\.geojson/,"$2").replace(/.*_(.*)_.*/, "$1")}
           </span>
           <span style={{ display: "block" }}>
-            {activeGradientFile.replace(/_.*/, "")}
+            {activeGradientFile.replace(/(_.*)?.geojson/, "")}
           </span>
         </>
       )}

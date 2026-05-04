@@ -14,7 +14,10 @@ export type GeoAction =
   | { type: "SET_GRADIENT"; payload: string | null }
   | { type: "COLOR_CHANGE"; key: keyof ColorTheme; value: string }
   | { type: "MENU_TOGGLE" }
-  | { type: "PLOT_TOGGLE" };
+  | { type: "CHEMICALS_TOGGLE" }
+  | { type: "AROMA_TOGGLE" }
+  | { type: "PALATE_TOGGLE" }
+  | { type: "CLIMATE_TOGGLE" };
 
 function resolveZipUrl(input: string): string {
   return input.includes("/") ? input : `/data/${input}`;
@@ -65,8 +68,19 @@ export const geoReducer = produce((draft: GeoState, action: GeoAction) => {
       draft.isMenuExpanded = !draft.isMenuExpanded;
       break;
 
-    case "PLOT_TOGGLE":
-      draft.isBarPlotExpanded = !draft.isBarPlotExpanded;
+    case "CHEMICALS_TOGGLE":
+      draft.isChemicalsExpanded = !draft.isChemicalsExpanded;
+      break;
+
+    case "AROMA_TOGGLE":
+      draft.isAromaExpanded = !draft.isAromaExpanded;
+      break;
+
+    case "PALATE_TOGGLE":
+      draft.isPalateExpanded = !draft.isPalateExpanded;
+      break;
+    case "CLIMATE_TOGGLE":
+      draft.isClimateExpanded = !draft.isClimateExpanded;
       break;
   }
 });

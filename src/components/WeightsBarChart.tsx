@@ -5,7 +5,7 @@ import { rgbToString } from "../utilities/hexToRgb";
 import type { MapTheme } from "../App";
 
 interface WeightsBarChartProps {
-  data: Array<{ metabolite: string; p1: number }>;
+  data: Array<{ attribute: string; weight: number }>;
   theme: MapTheme;
 }
 
@@ -13,7 +13,7 @@ export const WeightsBarChart = ({ data, theme }: WeightsBarChartProps) => {
 // Transform data to include computed colors
   const coloredData = data.map(d => ({
     ...d,
-    fill: rgbToString(computePointColor(d.p1, theme)),
+    fill: rgbToString(computePointColor(d.weight, theme)),
   }));
 
 return (
@@ -39,7 +39,7 @@ return (
       tickLine={false}
       />
       <YAxis 
-      dataKey="metabolite" 
+      dataKey="attribute" 
       type = "category" 
       textAnchor="end" 
       width={200}
@@ -51,7 +51,7 @@ return (
       />
       {/* <Tooltip /> */}
       {/* <Bar dataKey="p1" fill="#22c55e" />  // Use your theme color */}
-      <Bar dataKey="p1" fill="inherit" />
+      <Bar dataKey="weight" fill="inherit" />
     </BarChart>
 //   </ResponsiveContainer>
       );

@@ -7,7 +7,10 @@ export type GeoJsonCollection = GeoJSON.FeatureCollection<
   GeoJSON.Geometry,
   any
 > & {
-  weights: Array<{ metabolite: string; p1: number }>;
+  chemical: Array<{ attribute: string; weight: number }>;
+  aroma: Array<{ attribute: string; weight: number }>;
+  palate: Array<{ attribute: string; weight: number }>;
+  climate: Array<{ attribute: string; weight: number }>;
 };
 
 export interface ZipFileEntry {

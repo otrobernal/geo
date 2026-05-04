@@ -1,22 +1,22 @@
 import { memo, useMemo, useCallback } from "react";
-// import { memo, useMemo } from "react";
 import "./css/SidebarPanel.css";
-import { useConfiguration, useColorSlice, useBarplotSlice, useGeoDispatch, useZip } from "../hooks/hooks";
+import { useConfiguration, useColorSlice, useClimateSlice, useGeoDispatch, useZip } from "../hooks/hooks";
 import { hexToRgb, rgbToString } from "../utilities/hexToRgb";
 import { WeightsBarChart } from "./WeightsBarChart";
 
-export const WeightsPanel = memo(function WeightsPanel() {
+export const ClimatePanel = memo(function ClimatePanel() {
   const { zipName } = useZip();
-    const isExpanded = useBarplotSlice();
-    const dispatch = useGeoDispatch();
-
-    if (zipName != "WAwine_allSensoryWithMetabolites_minmaxNorm.zip") {
+  
+  if (zipName != "chemoclimateWithWeights.zip") {
       return null;
     }
 
+  const isExpanded = useClimateSlice();
+  const dispatch = useGeoDispatch();
+
   const handlePlotToggle = useCallback(
-    () => dispatch({ type: "PLOT_TOGGLE" }),
-    [dispatch],
+    () => dispatch({ type: "CLIMATE_TOGGLE" }),
+    [dispatch],   
   );
 
   const { activeGradientFile, availableFiles } = useConfiguration();
@@ -34,13 +34,13 @@ export const WeightsPanel = memo(function WeightsPanel() {
 
   return (
     <div
-      id="weights-panel"
+      id="climate-panel"
       className={`plot-panel ${isExpanded ? "plot-expanded" : "plot-collapsed"}`}
       // className={"plot-panel"}
     >
       <header className="panel-header">
         {/* <h4>Metabolites</h4> */}
-         {isExpanded && <h4>Related chemical atrributes</h4>}
+         {isExpanded && <h4>Related climatological atrributes</h4>}
         <button onClick={handlePlotToggle} className="icon-button">
           <svg
             width="20"
@@ -58,7 +58,7 @@ export const WeightsPanel = memo(function WeightsPanel() {
         </button> 
       </header>
       {isExpanded && (weightsFile && (
-        weightsFile.data.weights.length > 0 && (
+        weightsFile.data.climate.length > 0 && (
         <div className="panel-content">
           <div className="explanation">
             <>
@@ -67,7 +67,7 @@ export const WeightsPanel = memo(function WeightsPanel() {
               The size of the bar indicates the magnitude of the effect.
             </>
           </div>
-          <WeightsBarChart data={weightsFile.data.weights} theme={theme} />
+          <WeightsBarChart data={weightsFile.data.climate} theme={theme} />
         </div>
         ) || (
         <div className="panel-content">

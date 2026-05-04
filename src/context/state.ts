@@ -14,17 +14,23 @@ export interface GeoState {
   activeGradientFile: string | null;
   colors: ColorTheme;
   isMenuExpanded: boolean;
-  isBarPlotExpanded: boolean;
+  isChemicalsExpanded: boolean;
+  isAromaExpanded: boolean;
+  isPalateExpanded: boolean;
+  isClimateExpanded: boolean;
 }
 
 export const GEO_INITIAL_STATE: GeoState = {
-  zipName: "WAwine_allSensoryWithMetabolites_minmaxNorm.zip",
-  zipLocation: "/data/WAwine_allSensoryWithMetabolites_minmaxNorm.zip",
+  zipName: "allSensoryWithCompositionLoadings.zip",
+  zipLocation: "/data/allSensoryWithCompositionLoadings.zip",
   availableFiles: [],
   // displayFiles: new Set(),
   activeGradientFile: null,
   // colors: { base: "#94a3b8", min: "#ef4444", max: "#22c55e" },
   colors: { marker: "#94a3b8", min: "#0a65cd", max: "#e40749" },
   isMenuExpanded: true,
-  isBarPlotExpanded: true,
+  isChemicalsExpanded: true,
+  isAromaExpanded: true,
+  isPalateExpanded: true,
+  isClimateExpanded: true,
 };
